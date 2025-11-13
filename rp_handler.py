@@ -1,13 +1,8 @@
-"""
-RunPod Serverless Worker Handler for IndexTTS2
-Accepts text and voice filename, returns base64 encoded WAV audio
-"""
-
+import runpod
 import os
 import base64
 import tempfile
 from typing import Dict, Any
-import runpod
 
 from indextts.infer_v2 import IndexTTS2
 

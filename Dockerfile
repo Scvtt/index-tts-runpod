@@ -1,4 +1,4 @@
-FROM runpod/pytorch:2.8.0-py3.11-cuda12.8.1-cudnn-devel-ubuntu22.04
+FROM runpod/pytorch:2.1.0-py3.10-cuda11.8.0-devel
 
 # Set working directory
 WORKDIR /app
@@ -36,5 +36,5 @@ ENV PYTHONUNBUFFERED=1
 EXPOSE 8000
 
 # Run the handler
-CMD ["python3", "-u", "rp_handler.py"]
+CMD ["python", "-u", "rp_handler.py"]
 

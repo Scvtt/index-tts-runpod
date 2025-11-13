@@ -6,7 +6,8 @@ import subprocess
 import shutil
 from typing import Dict, Any
 from pathlib import Path
-from indextts.infer_v2 import IndexTTS2
+
+# IndexTTS2 will be imported after runtime installation
 
 # Initialize the TTS model (loaded once when worker starts)
 MODEL_DIR = os.getenv("MODEL_DIR", "/app/checkpoints")
@@ -17,6 +18,7 @@ MODEL_DOWNLOAD_URL = os.getenv("MODEL_DOWNLOAD_URL", "")  # Optional: custom dow
 # Global model instance
 tts_model = None
 model_downloaded = False
+indextts_installed = False
 
 
 def handler(job: Dict[str, Any]) -> Dict[str, Any]:
@@ -98,6 +100,52 @@ def handler(job: Dict[str, Any]) -> Dict[str, Any]:
             "error": error_msg,
             "audio_base64": None
         }
+
+def install_indextts():
+    """Install IndexTTS2 package at runtime if not already installed"""
+    global indextts_installed
+    
+    if indextts_installed:
+        return True
+    
+    try:
+        # Try importing to see if it's already installed
+        import indextts
+        print("IndexTTS2 already installed")
+        indextts_installed = True
+        return True
+    except ImportError:
+        pass
+    
+    print("Installing IndexTTS2 package (this may take a few minutes on first run)...")
+    
+    try:
+        indextts_path = "/app/indextts"
+        if not os.path.exists(indextts_path):
+            print(f"Error: IndexTTS2 repository not found at {indextts_path}")
+            return False
+        
+        # Install IndexTTS2 with --no-deps since dependencies are already in requirements.txt
+        result = subprocess.run(
+            ["pip", "install", "--no-cache-dir", "--no-deps", "-e", indextts_path],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        
+        print("IndexTTS2 installed successfully!")
+        indextts_installed = True
+        return True
+        
+    except subprocess.CalledProcessError as e:
+        print(f"Error installing IndexTTS2: {e}")
+        print(f"stdout: {e.stdout}")
+        print(f"stderr: {e.stderr}")
+        return False
+    except Exception as e:
+        print(f"Unexpected error installing IndexTTS2: {e}")
+        return False
+
 
 def download_model_checkpoints():
     """Download model checkpoints if they don't exist"""
@@ -182,6 +230,13 @@ def initialize_model():
     global tts_model
     
     if tts_model is None:
+        # Install IndexTTS2 package if not already installed
+        if not install_indextts():
+            raise RuntimeError("Failed to install IndexTTS2 package. Check logs for details.")
+        
+        # Import after installation
+        from indextts.infer_v2 import IndexTTS2
+        
         # Download model if not present
         if not download_model_checkpoints():
             print("Warning: Model checkpoints may not be available. Continuing anyway...")

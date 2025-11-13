@@ -18,12 +18,8 @@ RUN pip install --no-cache-dir -r requirements.txt && \
     pip cache purge || true
 
 # Clone IndexTTS2 repository (shallow clone to save space)
-RUN git clone --depth 1 --single-branch https://github.com/index-tts/index-tts.git /app/indextts
-
-# Install IndexTTS2 package and clean up unnecessary files
-RUN cd /app/indextts && \
-    pip install --no-cache-dir -e . && \
-    pip cache purge || true && \
+# We'll install it at runtime to avoid downloading heavy dependencies during build
+RUN git clone --depth 1 --single-branch https://github.com/index-tts/index-tts.git /app/indextts && \
     rm -rf /app/indextts/.git && \
     rm -rf /app/indextts/tests /app/indextts/examples /app/indextts/docs /app/indextts/.github /app/indextts/archive 2>/dev/null || true
 

@@ -34,7 +34,8 @@ env/
 *~
 
 # Model files (too large for git)
-checkpoints/
+# Uncomment the line below if you want to exclude checkpoints from git
+# checkpoints/
 *.pth
 *.pt
 *.ckpt

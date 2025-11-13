@@ -98,15 +98,51 @@ def initialize_model():
     """Initialize the IndexTTS2 model once at worker startup"""
     global tts_model
     if tts_model is None:
+        # Check if config file exists
+        if not os.path.exists(CONFIG_PATH):
+            error_msg = (
+                f"Model checkpoints not found!\n"
+                f"Expected config file: {CONFIG_PATH}\n"
+                f"Model directory: {MODEL_DIR}\n\n"
+                f"Please ensure model checkpoints are:\n"
+                f"1. Mounted as a volume in RunPod (recommended)\n"
+                f"2. Or included in the Docker image\n"
+                f"3. Or downloaded during container startup\n\n"
+                f"Refer to the IndexTTS2 repository for checkpoint download instructions:\n"
+                f"https://github.com/index-tts/index-tts"
+            )
+            print(error_msg)
+            raise FileNotFoundError(error_msg)
+        
+        # Check if model directory exists
+        if not os.path.exists(MODEL_DIR):
+            error_msg = (
+                f"Model directory not found: {MODEL_DIR}\n"
+                f"Please mount the checkpoints volume or ensure model files are available."
+            )
+            print(error_msg)
+            raise FileNotFoundError(error_msg)
+        
         print(f"Loading IndexTTS2 model from {MODEL_DIR}...")
-        tts_model = IndexTTS2(
-            cfg_path=CONFIG_PATH,
-            model_dir=MODEL_DIR,
-            use_fp16=False,
-            use_cuda_kernel=False,
-            use_deepspeed=False
-        )
-        print("Model loaded successfully!")
+        print(f"Config file: {CONFIG_PATH}")
+        try:
+            tts_model = IndexTTS2(
+                cfg_path=CONFIG_PATH,
+                model_dir=MODEL_DIR,
+                use_fp16=False,
+                use_cuda_kernel=False,
+                use_deepspeed=False
+            )
+            print("Model loaded successfully!")
+        except Exception as e:
+            error_msg = (
+                f"Failed to load IndexTTS2 model: {str(e)}\n"
+                f"Config path: {CONFIG_PATH}\n"
+                f"Model dir: {MODEL_DIR}\n"
+                f"Please verify that all model files are present and accessible."
+            )
+            print(error_msg)
+            raise
     return tts_model
 
 

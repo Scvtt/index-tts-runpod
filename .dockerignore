@@ -13,7 +13,8 @@ build
 .env
 .venv
 venv/
-*.md
 .DS_Store
 *.log
+# Allow checkpoints to be copied if they exist (uncomment to exclude)
+# checkpoints/
 

@@ -6,9 +6,11 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
+    git-lfs \
     ffmpeg \
     libsndfile1 \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && git lfs install
 
 # Copy requirements first for better caching
 COPY requirements.txt .
@@ -16,15 +18,30 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Clone IndexTTS2 repository
-RUN git clone https://github.com/index-tts/index-tts.git /app/indextts
+# Clone IndexTTS2 repository with Git LFS
+RUN git clone https://github.com/index-tts/index-tts.git /app/indextts && \
+    cd /app/indextts && \
+    git lfs pull && \
+    pip install -e .
 
-# Install IndexTTS2 package
-RUN cd /app/indextts && pip install -e .
+# Copy checkpoints from the cloned repository
+RUN if [ -d "/app/indextts/checkpoints" ]; then \
+        echo "Copying checkpoints from IndexTTS2 repository..."; \
+        mkdir -p /app/checkpoints && \
+        cp -r /app/indextts/checkpoints/* /app/checkpoints/; \
+        echo "Checkpoints copied successfully"; \
+    else \
+        echo "Warning: checkpoints not found in repository. You may need to mount as volume."; \
+        mkdir -p /app/checkpoints; \
+    fi
 
 # Copy application files
 COPY rp_handler.py .
 COPY audio_files/ ./audio_files/
+
+# Checkpoints are downloaded via Git LFS from the IndexTTS2 repository above
+# If you have local checkpoints you want to use instead, uncomment the line below:
+# COPY checkpoints/ ./checkpoints/
 
 # Set environment variables
 ENV MODEL_DIR=/app/checkpoints

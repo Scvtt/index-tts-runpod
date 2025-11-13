@@ -161,7 +161,15 @@ curl -X POST https://api.runpod.io/v2/your-endpoint-id/run \
 
 ## Model Checkpoints
 
-You need to download the IndexTTS2 model checkpoints separately. Refer to the [IndexTTS2 repository](https://github.com/index-tts/index-tts) for instructions on downloading the model files.
+**⚠️ Required**: You need to download the IndexTTS2 model checkpoints separately and mount them as a volume in RunPod.
+
+See **[CHECKPOINTS_SETUP.md](CHECKPOINTS_SETUP.md)** for detailed setup instructions.
+
+Quick setup:
+1. Create a RunPod network volume
+2. Download checkpoints from the [IndexTTS2 repository](https://github.com/index-tts/index-tts)
+3. Upload to your volume
+4. Mount the volume at `/app/checkpoints` in your endpoint
 
 The model files should be placed in the `checkpoints/` directory or mounted as a volume in RunPod.
 
@@ -192,6 +200,25 @@ The model may require significant GPU memory. Consider using a GPU with more VRA
 ## License
 
 This project uses IndexTTS2. Please refer to the [IndexTTS2 repository](https://github.com/index-tts/index-tts) for license information.
+
+## Example UI
+
+A simple web-based demo UI is included in the `example_ui/` directory. It provides:
+
+- Web interface for testing the API
+- In-browser audio playback
+- Easy configuration and voice selection
+- Download generated audio files
+
+To use it:
+
+```bash
+cd example_ui
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+See `example_ui/README.md` for detailed instructions.
 
 ## References
 

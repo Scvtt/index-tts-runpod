@@ -23,7 +23,7 @@ RUN git clone https://github.com/index-tts/index-tts.git /app/indextts
 RUN cd /app/indextts && pip install -e .
 
 # Copy application files
-COPY handler.py .
+COPY rp_handler.py .
 COPY audio_files/ ./audio_files/
 
 # Set environment variables

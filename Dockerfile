@@ -14,17 +14,13 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt && \
-    pip cache purge || true
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Clone IndexTTS2 repository (shallow clone to save space)
-# We'll install it at runtime to avoid downloading heavy dependencies during build
-RUN git clone --depth 1 --single-branch https://github.com/index-tts/index-tts.git /app/indextts && \
-    rm -rf /app/indextts/.git && \
-    rm -rf /app/indextts/tests /app/indextts/examples /app/indextts/docs /app/indextts/.github /app/indextts/archive 2>/dev/null || true
+# Clone IndexTTS2 repository
+RUN git clone https://github.com/index-tts/index-tts.git /app/indextts
 
-# Create checkpoints directory (models will be downloaded at runtime)
-RUN mkdir -p /app/checkpoints
+# Install IndexTTS2 package
+RUN cd /app/indextts && pip install -e .
 
 # Copy application files
 COPY rp_handler.py .

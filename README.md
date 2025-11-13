@@ -199,3 +199,4 @@ This project uses IndexTTS2. Please refer to the [IndexTTS2 repository](https://
 - [RunPod Serverless Documentation](https://docs.runpod.io/serverless/overview)
 - [RunPod Worker Template](https://github.com/runpod-workers/worker-template)
 
+[![Runpod](https://api.runpod.io/badge/Scvtt/index-tts-runpod)](https://console.runpod.io/hub/Scvtt/index-tts-runpod)

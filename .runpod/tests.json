@@ -1,0 +1,44 @@
+{
+  "tests": [
+    {
+      "name": "basic_text_to_speech",
+      "input": {
+        "text": "Hello, this is a test of the IndexTTS2 text-to-speech system.",
+        "voice": "voice_01.wav"
+      },
+      "timeout": 60000
+    },
+    {
+      "name": "long_text_test",
+      "input": {
+        "text": "This is a longer text sample to test the system's ability to handle extended speech generation. The model should be able to process this without issues and produce high-quality audio output.",
+        "voice": "voice_01.wav"
+      },
+      "timeout": 120000
+    }
+  ],
+  "config": {
+    "gpuTypeId": "NVIDIA RTX A5000",
+    "gpuCount": 1,
+    "env": [
+      {
+        "key": "MODEL_DIR",
+        "value": "/app/checkpoints"
+      },
+      {
+        "key": "CONFIG_PATH",
+        "value": "/app/checkpoints/config.yaml"
+      },
+      {
+        "key": "AUDIO_FILES_DIR",
+        "value": "/app/audio_files"
+      }
+    ],
+    "allowedCudaVersions": [
+      "12.1",
+      "12.0",
+      "11.8"
+    ]
+  }
+}
+

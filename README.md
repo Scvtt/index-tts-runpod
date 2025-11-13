@@ -1,5 +1,7 @@
 # IndexTTS2 RunPod Serverless Worker
 
+[![Runpod](https://api.runpod.io/badge/Scvtt/index-tts-runpod)](https://console.runpod.io/hub/Scvtt/index-tts-runpod)
+
 A serverless RunPod worker for IndexTTS2 text-to-speech synthesis. This worker accepts text and a voice filename, then returns base64-encoded WAV audio.
 
 ## Features
@@ -17,7 +19,10 @@ A serverless RunPod worker for IndexTTS2 text-to-speech synthesis. This worker a
 ├── Dockerfile           # Docker configuration
 ├── requirements.txt     # Python dependencies
 ├── audio_files/         # Reference audio files (WAV format)
-│   └── .gitkeep
+├── .runpod/             # RunPod hub configuration
+│   ├── hub.json         # Hub listing configuration
+│   └── tests.json       # Test configuration
+├── test_input.json      # Example test input
 └── README.md
 ```
 

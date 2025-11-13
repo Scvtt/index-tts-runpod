@@ -1,0 +1,36 @@
+{
+  "title": "IndexTTS2 Text-to-Speech",
+  "description": "Zero-shot text-to-speech synthesis using IndexTTS2. Convert text to natural speech with voice cloning capabilities. Accepts text input and voice reference file, returns base64-encoded WAV audio.",
+  "type": "serverless",
+  "category": "audio",
+  "iconUrl": "https://raw.githubusercontent.com/index-tts/index-tts/main/assets/logo.png",
+  "config": {
+    "runsOn": "GPU",
+    "containerDiskInGb": 20,
+    "presets": [
+      {
+        "name": "Standard",
+        "defaults": {
+          "MODEL_DIR": "/app/checkpoints",
+          "CONFIG_PATH": "/app/checkpoints/config.yaml",
+          "AUDIO_FILES_DIR": "/app/audio_files"
+        }
+      }
+    ],
+    "env": [
+      {
+        "key": "MODEL_DIR",
+        "value": "/app/checkpoints"
+      },
+      {
+        "key": "CONFIG_PATH",
+        "value": "/app/checkpoints/config.yaml"
+      },
+      {
+        "key": "AUDIO_FILES_DIR",
+        "value": "/app/audio_files"
+      }
+    ]
+  }
+}
+

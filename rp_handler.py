@@ -3,9 +3,7 @@ import os
 import base64
 import tempfile
 from typing import Dict, Any
-
 from indextts.infer_v2 import IndexTTS2
-
 
 # Initialize the TTS model (loaded once when worker starts)
 MODEL_DIR = os.getenv("MODEL_DIR", "checkpoints")
@@ -14,22 +12,6 @@ AUDIO_FILES_DIR = os.getenv("AUDIO_FILES_DIR", "audio_files")
 
 # Global model instance
 tts_model = None
-
-
-def initialize_model():
-    """Initialize the IndexTTS2 model once at worker startup"""
-    global tts_model
-    if tts_model is None:
-        print(f"Loading IndexTTS2 model from {MODEL_DIR}...")
-        tts_model = IndexTTS2(
-            cfg_path=CONFIG_PATH,
-            model_dir=MODEL_DIR,
-            use_fp16=False,
-            use_cuda_kernel=False,
-            use_deepspeed=False
-        )
-        print("Model loaded successfully!")
-    return tts_model
 
 
 def handler(job: Dict[str, Any]) -> Dict[str, Any]:
@@ -112,10 +94,24 @@ def handler(job: Dict[str, Any]) -> Dict[str, Any]:
             "audio_base64": None
         }
 
+def initialize_model():
+    """Initialize the IndexTTS2 model once at worker startup"""
+    global tts_model
+    if tts_model is None:
+        print(f"Loading IndexTTS2 model from {MODEL_DIR}...")
+        tts_model = IndexTTS2(
+            cfg_path=CONFIG_PATH,
+            model_dir=MODEL_DIR,
+            use_fp16=False,
+            use_cuda_kernel=False,
+            use_deepspeed=False
+        )
+        print("Model loaded successfully!")
+    return tts_model
+
 
 # Initialize model when worker starts
 if __name__ == "__main__":
-    print("Initializing IndexTTS2 worker...")
     initialize_model()
     runpod.serverless.start({"handler": handler})
 

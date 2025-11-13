@@ -1,0 +1,40 @@
+# RunPod Template Configuration
+# This file can be used to configure your RunPod template settings
+
+name: indextts2-worker
+description: IndexTTS2 Text-to-Speech Serverless Worker
+
+# Docker configuration
+docker_image: ""
+dockerfile_path: "Dockerfile"
+build_context: "."
+
+# Environment variables
+env:
+  - name: MODEL_DIR
+    value: "/app/checkpoints"
+    description: "Path to IndexTTS2 model checkpoints directory"
+  
+  - name: CONFIG_PATH
+    value: "/app/checkpoints/config.yaml"
+    description: "Path to IndexTTS2 config.yaml file"
+  
+  - name: AUDIO_FILES_DIR
+    value: "/app/audio_files"
+    description: "Path to directory containing reference audio files"
+
+# GPU requirements
+gpu_types:
+  - "NVIDIA RTX A5000"
+  - "NVIDIA RTX A6000"
+  - "NVIDIA A100"
+  - "NVIDIA A40"
+
+# Resource requirements
+resources:
+  min_memory: "16Gi"
+  min_vram: "8Gi"
+
+# Note: This is a reference file. Actual configuration is done in RunPod UI.
+# You can use these values as a guide when setting up your template.
+

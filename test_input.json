@@ -1,0 +1,7 @@
+{
+  "input": {
+    "text": "Hello, this is a test of the IndexTTS2 RunPod worker.",
+    "voice": "voice_01.wav"
+  }
+}
+

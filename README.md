@@ -40,16 +40,18 @@ audio_files/
   └── actor_name.wav
 ```
 
-### 2. Download Model Checkpoints
+### 2. Model Checkpoints
 
-You need to download the IndexTTS2 model checkpoints. The model expects:
-- `checkpoints/config.yaml`
-- Model files in `checkpoints/` directory
+The model checkpoints will be **automatically downloaded at runtime** if they're not already present. The worker will:
 
-**Note:** You'll need to download these separately and either:
-- Mount them as a volume in RunPod
-- Include them in the Docker image (if size allows)
-- Use RunPod's network volumes
+1. Check if model checkpoints exist at the configured path
+2. If not found, automatically download them from the IndexTTS2 repository
+3. Cache them for subsequent runs
+
+**Alternative Options:**
+- **Mount a volume**: Pre-download checkpoints to a RunPod network volume and mount it
+- **Manual download**: Download checkpoints separately and mount them as a volume
+- **Custom path**: Set `MODEL_DIR` environment variable to point to your checkpoint location
 
 ### 3. Build and Deploy
 
@@ -161,9 +163,14 @@ curl -X POST https://api.runpod.io/v2/your-endpoint-id/run \
 
 ## Model Checkpoints
 
-You need to download the IndexTTS2 model checkpoints separately. Refer to the [IndexTTS2 repository](https://github.com/index-tts/index-tts) for instructions on downloading the model files.
+**Automatic Download**: Model checkpoints are automatically downloaded at runtime if not present. This keeps the Docker image small (~2-3GB instead of 12GB+).
 
-The model files should be placed in the `checkpoints/` directory or mounted as a volume in RunPod.
+**Manual Setup (Optional)**: If you prefer to pre-download checkpoints:
+1. Download from the [IndexTTS2 repository](https://github.com/index-tts/index-tts)
+2. Mount them as a RunPod network volume
+3. Set `MODEL_DIR` environment variable to the mounted path
+
+The automatic download uses git sparse-checkout to fetch only the checkpoints directory, keeping the download efficient.
 
 ## Audio File Requirements
 
